@@ -17,6 +17,31 @@ firebase.initializeApp(config);
 var db = firebase.database();
 var parameter = "kittens"
 
+// Twitter authentication in Firebase
+var provider = new firebase.auth.TwitterAuthProvider();
+$('#ttr-login').on('click', function(e){
+    e.preventDefault();
+    console.log('#sm# login clicked');
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+      // You can use these server side with your app's credentials to access the Twitter API.
+      var token = result.credential.accessToken;
+      var secret = result.credential.secret;
+      // The signed-in user info.
+      var user = result.user;
+      // ...
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+})
+
 // API Keys and URLS
 
 // Twitter API Authenticate and URL (code here)
@@ -26,7 +51,7 @@ var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c"
 var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + parameter
 
 // twitter ajax call/ 'on click' (code here)
-	$(document).on("click", function() {
+	$('#kitten-button').on("click", function() {
 
 	$.ajax({
         url: pixabayQueryURL,
