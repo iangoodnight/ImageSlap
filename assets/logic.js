@@ -3,7 +3,18 @@ $( document ).ready(function() {
     console.log( "ready!" );
 
 // global variables
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyB62jW1JBdl6TtmzyPFra3-R4oJjRraoeM",
+    authDomain: "tweeto-fdba7.firebaseapp.com",
+    databaseURL: "https://tweeto-fdba7.firebaseio.com",
+    projectId: "tweeto-fdba7",
+    storageBucket: "tweeto-fdba7.appspot.com",
+    messagingSenderId: "155287704892"
+};
+firebase.initializeApp(config);
 
+var db = firebase.database();
 var parameter = "kittens"
 
 // API Keys and URLS
