@@ -10,7 +10,7 @@ var parameter = "kittens"
 
 // Twitter API Authenticate and URL (code here)
 
-// Pixabay key and URL
+// Pixabay (limites to 100char search) key and URL
 var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c"
 var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + parameter
 
@@ -31,21 +31,20 @@ var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + par
     console.log(pixabayData);     
     console.log("------------------------------------");
 
-    for (var i = 0; i < pixabayData.length; i++) {
+    console.log(pixabayData.hits.length);
+
+    for (var i = 0; i < pixabayData.hits.length; i++) {
 
     	console.log("yes");
 
-    	var imageDiv = $("<div>");
-
-    	var image = pixabayData[i].webformatURL;
+    	var image = pixabayData.hits[i].webformatURL;
 
     	var returnImage = $("<img>");
     	returnImage.attr("src", image);
-    	returnImage.addClass(tweetoImage);
 
 
-    	imageDiv.append(returnImage);
-    	$("#target").append(imageDiv);
+    	
+    	$(".card-image").html(returnImage);
 
     	}
     });
