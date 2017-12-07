@@ -22,14 +22,23 @@
           
 </head>
 <body>
-   <nav class="light-blue lighten-1" role="navigation">
+   <nav class="blue-grey darken-2" role="navigation">
     <div class="nav-wrapper container">
       <a id="logo-container" href="#" class="brand-logo">Logo</a>
-      <a id="email-login" href="#emailmodal" class="waves-effect waves-light btn modal-trigger">Login</a>
-      <!-- <a id="ttr-login" class="waves-effect waves-light btn">Login with Twitter</a> -->
-      <div class="right" id="authuser"></div>
     </div>
   </nav>
+  <div class="section no-pad-bot blue-grey lighten-5 z-depth-1" id="authsection">
+    <div class="row">
+      <div class="col s6">
+        <a id="email-login" href="#emailmodal" class="waves-effect waves-light btn modal-trigger">Login</a>
+        <a id="ttr-login" class="waves-effect waves-light btn">Login with Twitter</a>
+        <div id="authuser" class="valign-wrapper"></div>
+      </div>
+      <div class="col s6">
+        <a id="authlogout" class="right waves-effect waves-light btn">Logout</a>
+      </div>
+    </div>
+  </div>
   <div id="emailmodal" class="modal">
     <div class="modal-content">
       <div class="row">
