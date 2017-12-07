@@ -15,7 +15,8 @@ var config = {
 firebase.initializeApp(config);
 
 var db = firebase.database();
-var parameter = "kittens"
+var parameter = "kittens";
+
 
 // Twitter authentication in Firebase
 var provider = new firebase.auth.TwitterAuthProvider();
@@ -75,15 +76,63 @@ var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + par
 
     	var image = pixabayData.hits[i].webformatURL;
 
-    	var returnImage = $("<img>");
-    	returnImage.attr("src", image);
+    	// Building HTML elements for images
+
+    	var gridDiv = $("<div>");
+    	gridDiv.addClass("col m4");
+
+    	var imgOutsideDiv = $("<div>");
+    	imgOutsideDiv.addClass("card");
+
+    	var imgDiv = $("<div>");
+    	imgDiv.addClass("card-image");
+    	imgDiv.attr("id", "img" + i);
+
+    	var newImage = $("<img>");
+    	newImage.addClass("responsive-img");
+    	newImage.attr({
+    		"src": image,
+    		"alt": "broken image"
+    	});
+
+    	var title = $("<span>");
+    	title.addClass("card-title");
+    	title.text("Title");
+
+    	var tweetTextDiv = $("<div>");
+    	tweetTextDiv.addClass("card-content");
+
+    	var tweetText = $("<p>");
+    	tweetText.text("Tweets Go Here!");
+
+    	var publish = $("<div>");
+    	publish.addClass("card-action");
+
+    	var publishLink = $("<a>");
+    	publishLink.attr("href", "#");
+    	publishLink.text("Publish to Twitter");
 
 
-    	
-    	$(".card-image").html(returnImage);
+    	// order elements
+    	gridDiv.append(imgOutsideDiv);
+    	imgOutsideDiv.append(imgDiv);
+    	imgDiv.append(newImage);
+    	imgDiv.append(title);
+    	imgOutsideDiv.append(tweetTextDiv);
+    	tweetTextDiv.append(tweetText);
+    	imgOutsideDiv.append(publish);
+    	publish.append(publishLink);
+
+
+
+
+    	$("#tweetgrid").append(gridDiv);
+
 
     	}
     });
+
+
 
 	})
 
