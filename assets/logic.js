@@ -16,18 +16,61 @@ firebase.initializeApp(config);
 
 var db = firebase.database();
 var parameter = "kittens";
-
-
+// Email + Password authentication in Firebase
+$('.modal').modal();
+// Email registration
+$('#register-submit').on('click', function(e){
+  e.preventDefault();
+  var email = $('#register-email').val().trim();
+  var password = $('#register-password').val().trim();
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+  .catch(function(error){
+    console.log('Error in email registration: ',error);
+  });
+  $('#register-email').val('');
+  $('#register-password').val('');
+  $('#emailmodal').modal('close');
+});
+// Email login
+$('#login-submit').on('click', function(e){
+  e.preventDefault();
+  var email = $('#login-email').val().trim();
+  var password = $('#login-password').val().trim();
+  firebase.auth().signInWithEmailAndPassword(email, password)
+  .catch(function(error){
+    console.log('Error in email login: ',error);
+  });
+  $('#login-email').val('');
+  $('#login-password').val('');
+  $('#emailmodal').modal('close');
+});
+// Handle authenticated users
+firebase.auth().onAuthStateChanged(function(user){
+  if (user) {
+    // User is authenticated
+    var displayName = user.displayName;
+    var email = user.email;
+    var emailVerified = user.emailVerified;
+    var photoURL = user.photoURL;
+    var isAnonymous = user.isAnonymous;
+    var uid = user.uid;
+    var providerData = user.providerData;
+    $('#email-login').hide();
+    $('#authuser').text('Welcome, '+ email);
+  }
+});
 // Twitter authentication in Firebase
 var provider = new firebase.auth.TwitterAuthProvider();
 $('#ttr-login').on('click', function(e){
     e.preventDefault();
     console.log('#sm# login clicked');
+    console.log('Sign in with Popup...');
     firebase.auth().signInWithPopup(provider).then(function(result) {
       // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
       // You can use these server side with your app's credentials to access the Twitter API.
+      console.log('Getting Twitter stuff...')
       var token = result.credential.accessToken;
-      var secret = result.credential.secret;
+      var secret = result.credential.secret;1
       // The signed-in user info.
       var user = result.user;
       // ...
@@ -41,7 +84,7 @@ $('#ttr-login').on('click', function(e){
       var credential = error.credential;
       // ...
     });
-})
+});
 
 // API Keys and URLS
 
