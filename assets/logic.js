@@ -56,9 +56,25 @@ firebase.auth().onAuthStateChanged(function(user){
     var uid = user.uid;
     var providerData = user.providerData;
     $('#email-login').hide();
-    $('#authuser').text('Welcome, '+ email);
+    $('#ttr-login').hide();
+    $('#authuser').html('<i class="material-icons">person</i> Welcome, '+ email);
+    $('#authlogout').css('display','inline-block');
   }
 });
+// Email Logout
+$('#authlogout').on('click',function(e){
+  e.preventDefault();
+  firebase.auth().signOut().then(function() {
+    // Sign-out successful.
+    console.log('Email user signed out.');
+    $('#email-login').show();
+    $('#authuser').text('');
+    $('#authlogout').hide();
+  }, function(error) {
+    console.log('Error in email logout: ', error);
+  });
+});
+
 // Twitter authentication in Firebase
 var provider = new firebase.auth.TwitterAuthProvider();
 $('#ttr-login').on('click', function(e){
