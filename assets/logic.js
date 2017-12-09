@@ -113,9 +113,12 @@ $('#ttr-login-popup').on('click', function(e){
       // You can use these server side with your app's credentials to access the Twitter API.
       console.log('Getting Twitter stuff...')
       var token = result.credential.accessToken;
-      var secret = result.credential.secret;1
+      console.log('Token: ', token);
+      var secret = result.credential.secret;
+      console.log('Secret: ', secret);
       // The signed-in user info.
       var user = result.user;
+      console.log('User: ', user);
       // ...
     }).catch(function(error) {
       // Handle Errors here.
