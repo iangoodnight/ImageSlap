@@ -177,7 +177,7 @@ $('#ttr-login').on('click', function(e){
     	publish.addClass("card-action");
 
     	var publishLink = $("<a>");
-    	publishLink.addClass("waves-effect waves-light btn modal-trigger");
+    	publishLink.addClass("clickable picture waves-effect waves-light btn modal-trigger");
     	publishLink.attr("href", "#picmodal");
     	publishLink.text("Publish to Twitter");
 
@@ -207,6 +207,6 @@ $('#ttr-login').on('click', function(e){
 
 
 
-
+    
 
 });
