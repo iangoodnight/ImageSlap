@@ -83,66 +83,9 @@ $('#authlogout').on('click',function(e){
   });
 });
 
-//Twitter authentication in Firebase
-var provider = new firebase.auth.TwitterAuthProvider();
-$('#ttr-login').on('click', function(e){
-    e.preventDefault();
-    console.log('Signin with redirect?');
-    firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function(result) {
-      if (result.credential) {
-        // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-        // You can use these server side with your app's credentials to access the Twitter API.
-        var token = result.credential.accessToken;
-        var secret = result.credential.secret;
-        // ...
-      }
-      // The signed-in user info.
-      var user = result.user;
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-    });
-});
-$('#ttr-login-popup').on('click', function(e){
-    e.preventDefault();
-    console.log('Sign in with Popup...');
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-      // You can use these server side with your app's credentials to access the Twitter API.
-      console.log('Getting Twitter stuff...')
-      var token = result.credential.accessToken;
-      console.log('Token: ', token);
-      var secret = result.credential.secret;
-      console.log('Secret: ', secret);
-      // The signed-in user info.
-      var user = result.user;
-      console.log('User: ', user);
-      // ...
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log('Error: ', errorCode, errorMessage);
-      // The email of the user's account used.
-      var email = error.email;
-      console.log('Error email: ', email);
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-      console.log('Error Credential: ', credential);
-    });
-});
 
 // API Keys and URLS
 
-// Twitter API Authenticate and URL (code here)
 
 // Pixabay (limites to 100char search) key and URL
 var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c"
@@ -210,7 +153,10 @@ var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + par
     	publish.addClass("card-action");
 
     	var publishLink = $("<a>");
-    	publishLink.attr("href", "#");
+    	publishLink.attr({
+        href: '#picmodal',
+        class: 'modal-trigger'
+      });
     	publishLink.text("Publish to Twitter");
 
 
