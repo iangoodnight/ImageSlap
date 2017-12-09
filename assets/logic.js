@@ -2,8 +2,6 @@
 $( document ).ready(function() {
     console.log( "ready!" );
 
-console.log(junk);
-
 // global variables
 // Initialize Firebase
 var config = {
@@ -17,8 +15,11 @@ var config = {
 firebase.initializeApp(config);
 
 var db = firebase.database();
+
+var parameter = "kittens";
 // Email + Password authentication in Firebase
 $('.modal').modal();
+
 // Email registration
 $('#register-submit').on('click', function(e){
   e.preventDefault();
@@ -32,6 +33,7 @@ $('#register-submit').on('click', function(e){
   $('#register-password').val('');
   $('#emailmodal').modal('close');
 });
+
 // Email login
 $('#login-submit').on('click', function(e){
   e.preventDefault();
@@ -45,7 +47,8 @@ $('#login-submit').on('click', function(e){
   $('#login-password').val('');
   $('#emailmodal').modal('close');
 });
-// Handle authenticated users
+
+//Handle authenticated users
 firebase.auth().onAuthStateChanged(function(user){
   if (user) {
     // User is authenticated
@@ -57,24 +60,45 @@ firebase.auth().onAuthStateChanged(function(user){
     var uid = user.uid;
     var providerData = user.providerData;
     $('#email-login').hide();
-    $('#authuser').text('Welcome, '+ email);
+    $('#ttr-login').hide();
+    $('#ttr-login-popup').hide();
+    $('#authuser').html('<i class="material-icons">person</i> Welcome, '+ email);
+    $('#authlogout').css('display','inline-block');
   }
 });
-// Twitter authentication in Firebase
+
+// Email Logout
+$('#authlogout').on('click',function(e){
+  e.preventDefault();
+  firebase.auth().signOut().then(function() {
+    // Sign-out successful.
+    console.log('Email user signed out.');
+    $('#email-login').css('display','inline-block');
+    $('#ttr-login').css('display','inline-block');
+    $('#ttr-login-popup').css('display','inline-block');
+    $('#authuser').text('');
+    $('#authlogout').hide();
+  }, function(error) {
+    console.log('Error in email logout: ', error);
+  });
+});
+
+//Twitter authentication in Firebase
 var provider = new firebase.auth.TwitterAuthProvider();
 $('#ttr-login').on('click', function(e){
     e.preventDefault();
-    console.log('#sm# login clicked');
-    console.log('Sign in with Popup...');
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-      // You can use these server side with your app's credentials to access the Twitter API.
-      console.log('Getting Twitter stuff...')
-      var token = result.credential.accessToken;
-      var secret = result.credential.secret;1
+    console.log('Signin with redirect?');
+    firebase.auth().signInWithRedirect(provider);
+    firebase.auth().getRedirectResult().then(function(result) {
+      if (result.credential) {
+        // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+        // You can use these server side with your app's credentials to access the Twitter API.
+        var token = result.credential.accessToken;
+        var secret = result.credential.secret;
+        // ...
+      }
       // The signed-in user info.
       var user = result.user;
-      // ...
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -86,40 +110,46 @@ $('#ttr-login').on('click', function(e){
       // ...
     });
 });
+$('#ttr-login-popup').on('click', function(e){
+    e.preventDefault();
+    console.log('Sign in with Popup...');
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+      // You can use these server side with your app's credentials to access the Twitter API.
+      console.log('Getting Twitter stuff...')
+      var token = result.credential.accessToken;
+      console.log('Token: ', token);
+      var secret = result.credential.secret;
+      console.log('Secret: ', secret);
+      // The signed-in user info.
+      var user = result.user;
+      console.log('User: ', user);
+      // ...
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log('Error: ', errorCode, errorMessage);
+      // The email of the user's account used.
+      var email = error.email;
+      console.log('Error email: ', email);
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+      console.log('Error Credential: ', credential);
+    });
+});
+
+// API Keys and URLS
+
+// Twitter API Authenticate and URL (code here)
+
+// Pixabay (limites to 100char search) key and URL
+var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c"
+var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + parameter
 
 // twitter ajax call/ 'on click' (code here)
 	$('#kitten-button').on("click", function() {
-
-	$("#tweetgrid").empty();
-
-	// trim the input value
-
-    var tweet = $("#input").val().toLowerCase().trim();
-    console.log(tweet);
-
-    var res = tweet.split(" ");
-
-	console.log(res);
-
-	// Pull junk words out of string
-	for (var j = res.length - 1; j >= 0; j--) {
-	
-
-		for (var k = junk.length - 1; k >= 0; k--) {
-		 
-		if (res[j] === junk[k]) {
-			res.splice(j, 1);
-		};
-		};
-	};
-	console.log(res);
-	var result = res.join('+');
-	console.log(result);
-	// ------------------------------------------------
-
-	// Pixabay (limites to 100char search) key and URL
-	var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c";
-	var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + result;
 
 	$.ajax({
         url: pixabayQueryURL,
@@ -143,7 +173,10 @@ $('#ttr-login').on('click', function(e){
 
     	var image = pixabayData.hits[i].webformatURL;
 
-		// Building HTML elements for images
+    	var tweet = $("#input").val().trim();
+    	console.log(tweet);
+
+    	// Building HTML elements for images
 
     	var gridDiv = $("<div>");
     	gridDiv.addClass("col m4");
@@ -177,8 +210,13 @@ $('#ttr-login').on('click', function(e){
     	publish.addClass("card-action");
 
     	var publishLink = $("<a>");
-    	publishLink.addClass("clickable picture waves-effect waves-light btn modal-trigger");
-    	publishLink.attr("href", "#picmodal");
+
+
+    	publishLink.attr({
+        href: '#picmodal',
+        class: 'modal-trigger'
+      });
+
     	publishLink.text("Publish to Twitter");
 
 
@@ -198,12 +236,17 @@ $('#ttr-login').on('click', function(e){
     	$("#tweetgrid").append(gridDiv);
 
 
-    	};
+    	}
     });
 
 
 
-	});
+	})
+
+
+
+
+
 
 
 
