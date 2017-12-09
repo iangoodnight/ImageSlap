@@ -210,7 +210,10 @@ var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + par
     	publish.addClass("card-action");
 
     	var publishLink = $("<a>");
-    	publishLink.attr("href", "#");
+    	publishLink.attr({
+        href: '#picmodal',
+        class: 'modal-trigger'
+      });
     	publishLink.text("Publish to Twitter");
 
 
