@@ -173,6 +173,9 @@ var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + par
 
     	var image = pixabayData.hits[i].webformatURL;
 
+    	var tweet = $("#input").val().trim();
+    	console.log(tweet);
+
     	// Building HTML elements for images
 
     	var gridDiv = $("<div>");
@@ -188,13 +191,14 @@ var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + par
     	var newImage = $("<img>");
     	newImage.addClass("responsive-img");
     	newImage.attr({
+    		"style": "background-size: cover; height: 200px; width: 200px;",
     		"src": image,
     		"alt": "broken image"
     	});
 
     	var title = $("<span>");
     	title.addClass("card-title");
-    	title.text("Title");
+    	title.text(tweet);
 
     	var tweetTextDiv = $("<div>");
     	tweetTextDiv.addClass("card-content");
