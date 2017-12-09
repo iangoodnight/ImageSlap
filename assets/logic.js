@@ -37,31 +37,31 @@ var parameter = "kittens";
 // Email + Password authentication in Firebase
 $('.modal').modal();
 // Email registration
-$('#register-submit').on('click', function(e){
-  e.preventDefault();
-  var email = $('#register-email').val().trim();
-  var password = $('#register-password').val().trim();
-  firebase.auth().createUserWithEmailAndPassword(email, password)
-  .catch(function(error){
-    console.log('Error in email registration: ',error);
-  });
-  $('#register-email').val('');
-  $('#register-password').val('');
-  $('#emailmodal').modal('close');
-});
-// Email login
-$('#login-submit').on('click', function(e){
-  e.preventDefault();
-  var email = $('#login-email').val().trim();
-  var password = $('#login-password').val().trim();
-  firebase.auth().signInWithEmailAndPassword(email, password)
-  .catch(function(error){
-    console.log('Error in email login: ',error);
-  });
-  $('#login-email').val('');
-  $('#login-password').val('');
-  $('#emailmodal').modal('close');
-});
+// $('#register-submit').on('click', function(e){
+//   e.preventDefault();
+//   var email = $('#register-email').val().trim();
+//   var password = $('#register-password').val().trim();
+//   firebase.auth().createUserWithEmailAndPassword(email, password)
+//   .catch(function(error){
+//     console.log('Error in email registration: ',error);
+//   });
+//   $('#register-email').val('');
+//   $('#register-password').val('');
+//   $('#emailmodal').modal('close');
+// });
+// // Email login
+// $('#login-submit').on('click', function(e){
+//   e.preventDefault();
+//   var email = $('#login-email').val().trim();
+//   var password = $('#login-password').val().trim();
+//   firebase.auth().signInWithEmailAndPassword(email, password)
+//   .catch(function(error){
+//     console.log('Error in email login: ',error);
+//   });
+//   $('#login-email').val('');
+//   $('#login-password').val('');
+//   $('#emailmodal').modal('close');
+// });
 // Handle authenticated users
 // firebase.auth().onAuthStateChanged(function(user){
 //   if (user) {
@@ -119,78 +119,120 @@ initApp = function() {
   window.addEventListener('load', function() {
     initApp()
   });
-// Email Logout
-$('#authlogout').on('click',function(e){
-  e.preventDefault();
-  firebase.auth().signOut().then(function() {
-    // Sign-out successful.
-    console.log('Email user signed out.');
-    $('#email-login').css('display','inline-block');
-    $('#ttr-login').css('display','inline-block');
-    $('#ttr-login-popup').css('display','inline-block');
-    $('#authuser').text('');
-    $('#authlogout').hide();
-  }, function(error) {
-    console.log('Error in email logout: ', error);
-  });
-});
+ // FirebaseUI config.
+      var uiConfig = {
+        callbacks: {
+          signInSuccess: function(currentUser, credential, redirectUrl) {
+            // Do something.
+            // Return type determines whether we continue the redirect automatically
+            // or whether we leave that to developer to handle.
+            console.log('CUrrent User: ',currentUser);
+            console.log('Credential: ',credential);
+            console.log('RedirectURL: ',redirectUrl);
+            return true;
+          },
+          uiShown: function() {
+            // The widget is rendered.
+            // Hide the loader.
+            document.getElementById('loader').style.display = 'none';
+          }
+        },
+        credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
+        // Query parameter name for mode.
+        queryParameterForWidgetMode: 'mode',
+        // Query parameter name for sign in success url.
+        queryParameterForSignInSuccessUrl: 'signInSuccessUrl',
+        // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+        signInFlow: 'popup',
+        signInSuccessUrl: './index.html',
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+          {
+            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            // Whether the display name should be displayed in the Sign Up page.
+            requireDisplayName: true
+          },
+        ],
+        // Terms of service url.
+        tosUrl: './index.html'
+      };
+
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+// // Email Logout
+// $('#authlogout').on('click',function(e){
+//   e.preventDefault();
+//   firebase.auth().signOut().then(function() {
+//     // Sign-out successful.
+//     console.log('Email user signed out.');
+//     $('#email-login').css('display','inline-block');
+//     $('#ttr-login').css('display','inline-block');
+//     $('#ttr-login-popup').css('display','inline-block');
+//     $('#authuser').text('');
+//     $('#authlogout').hide();
+//   }, function(error) {
+//     console.log('Error in email logout: ', error);
+//   });
+// });
 
 // Twitter authentication in Firebase
-var provider = new firebase.auth.TwitterAuthProvider();
-$('#ttr-login').on('click', function(e){
-    e.preventDefault();
-    console.log('Signin with redirect?');
-    firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function(result) {
-      if (result.credential) {
-        // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-        // You can use these server side with your app's credentials to access the Twitter API.
-        var token = result.credential.accessToken;
-        var secret = result.credential.secret;
-        // ...
-      }
-      // The signed-in user info.
-      var user = result.user;
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-    });
-});
-$('#ttr-login-popup').on('click', function(e){
-    e.preventDefault();
-    console.log('Sign in with Popup...');
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-      // You can use these server side with your app's credentials to access the Twitter API.
-      console.log('Getting Twitter stuff...')
-      var token = result.credential.accessToken;
-      console.log('Token: ', token);
-      var secret = result.credential.secret;
-      console.log('Secret: ', secret);
-      // The signed-in user info.
-      var user = result.user;
-      console.log('User: ', user);
-      // ...
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log('Error: ', errorCode, errorMessage);
-      // The email of the user's account used.
-      var email = error.email;
-      console.log('Error email: ', email);
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-      console.log('Error Credential: ', credential);
-    });
-});
+// var provider = new firebase.auth.TwitterAuthProvider();
+// $('#ttr-login').on('click', function(e){
+//     e.preventDefault();
+//     console.log('Signin with redirect?');
+//     firebase.auth().signInWithRedirect(provider);
+//     firebase.auth().getRedirectResult().then(function(result) {
+//       if (result.credential) {
+//         // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+//         // You can use these server side with your app's credentials to access the Twitter API.
+//         var token = result.credential.accessToken;
+//         var secret = result.credential.secret;
+//         // ...
+//       }
+//       // The signed-in user info.
+//       var user = result.user;
+//     }).catch(function(error) {
+//       // Handle Errors here.
+//       var errorCode = error.code;
+//       var errorMessage = error.message;
+//       // The email of the user's account used.
+//       var email = error.email;
+//       // The firebase.auth.AuthCredential type that was used.
+//       var credential = error.credential;
+//       // ...
+//     });
+// });
+// $('#ttr-login-popup').on('click', function(e){
+//     e.preventDefault();
+//     console.log('Sign in with Popup...');
+//     firebase.auth().signInWithPopup(provider).then(function(result) {
+//       // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+//       // You can use these server side with your app's credentials to access the Twitter API.
+//       console.log('Getting Twitter stuff...')
+//       var token = result.credential.accessToken;
+//       console.log('Token: ', token);
+//       var secret = result.credential.secret;
+//       console.log('Secret: ', secret);
+//       // The signed-in user info.
+//       var user = result.user;
+//       console.log('User: ', user);
+//       // ...
+//     }).catch(function(error) {
+//       // Handle Errors here.
+//       var errorCode = error.code;
+//       var errorMessage = error.message;
+//       console.log('Error: ', errorCode, errorMessage);
+//       // The email of the user's account used.
+//       var email = error.email;
+//       console.log('Error email: ', email);
+//       // The firebase.auth.AuthCredential type that was used.
+//       var credential = error.credential;
+//       // ...
+//       console.log('Error Credential: ', credential);
+//     });
+// });
 
 // API Keys and URLS
 
