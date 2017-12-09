@@ -68,10 +68,10 @@ firebase.auth().onAuthStateChanged(function(user){
 
   // trim the input value
 
-    var tweet = $("#input").val().toLowerCase().trim();
+    var tweet = $("#input").val().toLowerCase().trim().replace(/[^a-z0-9\s]/gi, '');
     console.log(tweet);
-
-    var res = tweet.split(" ");
+ 
+	var res = tweet.split(" ");
 
   console.log(res);
 
@@ -153,7 +153,7 @@ firebase.auth().onAuthStateChanged(function(user){
       var publishLink = $("<a>");
       publishLink.addClass("clickable picture waves-effect waves-light btn modal-trigger");
       publishLink.attr("href", "#picmodal");
-      publishLink.text("Publish to Twitter");
+      publishLink.text("Publish");
 
 
       // order elements
