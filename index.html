@@ -24,7 +24,7 @@
 <body>
    <nav class="blue-grey darken-2" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo">Logo</a>
+      <a id="logo-container" href="#" class="brand-logo">ImageSlap</a>
     </div>
   </nav>
   <div class="section no-pad-bot blue-grey lighten-5 z-depth-1" id="authsection">
@@ -71,8 +71,14 @@
             <form class="col s12">
               <div class="row">
                 <div class="input-field col s12">
+                  <input id="register-displayname" type="text" class="validate" data-length="25">
+                  <label for="register-displayname">Username (max 25 characters)</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
                   <input id="register-email" type="email" class="validate">
-                  <label for="register-email">Email</label>
+                  <label id="label-register-email" for="register-email">Email</label>
                 </div>
               </div>
               <div class="row">
@@ -95,13 +101,24 @@
   <div class="section no-pad-bot" id="index-banner">
     <div class="container">
       <br><br>
-      <h1 class="header center orange-text">#Tweeto</h1>
+      <h1 class="header center orange-text">ImageSlap</h1>
       <div class="row center">
-        <h5 class="header col s12 light">Matching Tweets with Pictures Based on Language Processing</h5>
+        <h5 class="header col s12 light">You provide the text. We'll slap it on an image.</h5>
       </div>
       <div class="row center">
-        <input type="text" id="input">
-        <button id="kitten-button" class="btn-large waves-effect waves-light orange">Get Kittens</button>
+        <div class="col s8 offset-s2">
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" id="input" data-length="144">
+              <label for="input">Write some text to slap on an image.</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12">
+              <button id="kitten-button" class="btn-large waves-effect waves-light orange">Slap It</button>
+            </div>
+          </div>
+        </div>
       </div>
       <br><br>
 
