@@ -39,7 +39,8 @@ $( document ).ready(function() {
           displayName: displayname
         }).then(function(){
           console.log('User display name updated: ',user.displayName);
-          $('#authuser').text('Welcome, '+ user.displayName + '.');
+          $('.authuser').text('Welcome, '+ user.displayName + '.');
+          $('.authuser-name').text(user.displayName + '\'s');
         }).catch(function(error){
           console.log('Error updating display name: ',error);
         });
@@ -78,10 +79,29 @@ $( document ).ready(function() {
       $('#email-login').hide();
       $('#authlogout').css('display','inline-block');
       if (user.displayName === null) {
-        $('#authuser').text('Welcome, '+ email + '.');
+        $('.authuser').text('Welcome, '+ email + '.');
+        $('.authuser-name').text(email + '\'s');
       } else {
-        $('#authuser').text('Welcome, '+ displayName + '.');
+        $('.authuser').text('Welcome, '+ displayName + '.');
+        $('.authuser-name').text(displayName + '\'s');
       }
+
+      // handle user database record
+      writeUserData(uid,displayName,email);
+
+      // listen for updates
+      var userRef = db.ref('users/' + uid + '/vault/');
+      userRef.on('value', function(snapshot){
+        $('#imgvault-grid').empty();
+        snapshot.forEach(function(childSnapshot){
+          var childKey = childSnapshot.key;
+          var childData = childSnapshot.val();
+          console.log(childData.url);
+          updateVault(uid, childKey, childData);
+        });
+        
+      });
+
       
     } else {
       // User is signed out
@@ -90,15 +110,61 @@ $( document ).ready(function() {
     }
   });
 
+
+  // Database Functions
+  function updateVault(uid, key, data){
+    var $div = $('<div>').attr('class','col s3');
+    var $img = $('<img>').attr({ 'src': data.url,'id': data.timestamp,'data-value': key, 'class': 'responsive-img' });
+    var $button = $('<button>').attr({
+      'class': 'delbtn btn waves-effect waves-light red',
+      'data-key': key,
+      'data-uid': uid
+    });
+    $button = $button.append($('<i>').attr('class', 'material-icons').text('delete'));
+    $div = $div.append($img).append($button);
+    $('#imgvault-grid').append($div);
+    
+    //<a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+  }
+
+  function writeUserData(uid,displayName,email) {
+    db.ref('users/' + uid).update({
+      displayname: displayName,
+      email: email
+    });
+  }
+
+  function pushUserImage(url){
+    var user = firebase.auth().currentUser;
+    var uid = user.uid;
+    if (user != null) {
+      var imgurl = {
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        url: url
+      };
+      var newImgKey = db.ref().child('users/' + uid + '/vault').push().key;
+
+      var updates = {};
+      updates['users/' + uid + '/vault/' + newImgKey] = imgurl;
+
+      return db.ref().update(updates);
+      // db.ref('users/' + uid +'/vault/').push({
+      //   timestamp: firebase.database.ServerValue.TIMESTAMP,
+      //   url: url
+      // });
+    }
+  }
+
   // Logout Buttons
   // Email Logout
-   $('#authlogout').on('click',function(e){
+   $('#authlogout-btn').on('click',function(e){
      e.preventDefault();
      firebase.auth().signOut().then(function() {
        // Sign-out successful.
        console.log('Email user signed out.');
        $('#email-login').show();
-       $('#authuser').text('');
+       $('.authuser').text('');
+       $('.authuser-name').text('My');
        $('#authlogout').hide();
      }, function(error) {
        console.log('Error in email logout: ', error);
@@ -277,6 +343,8 @@ $( document ).ready(function() {
   }
 
   $(document).click(function(event){
+
+    // track clicks for the generated Publish Buttons
     $(event.target).closest('.pubbtn').each(function(){
       var objid = '#' + this.id;
       var $this = $(this);
@@ -296,7 +364,7 @@ $( document ).ready(function() {
       $picmodalContent.text('').append(picimg).append(pictxt).append(savebtn);
     }); // end .pubbtn click check
 
-
+    // track clicks for the generated Save button
     $(event.target).closest('.savebtn').each(function(){
       // this button is to save the cloudinary URL to the firebase database for the user
 
@@ -304,12 +372,26 @@ $( document ).ready(function() {
       var $this = $(this);
       console.log(objid + ' clicked!');
 
+      // Store img and txt and pass to Cloudinary function
       var picimg = $this.attr('data-img');
-      console.log('Image URL to send: ',picimg);
-      console.log('Text to send: ',pictxt);
       var pictxt = $this.attr('data-txt');
       console.log('Cloudinary URL: ', doCloudinary(picimg, pictxt));
+      // Store return from Cloudinary function
+      var url = doCloudinary(picimg, pictxt);
+      // save link to db
+      pushUserImage(url);
 
+    });
+
+    // track clicks for the generated Delete buttons
+    $(event.target).closest('.delbtn').each(function(){
+      console.log('Delete button clicked!');
+      var $this = $(this);
+      var key = $this.attr('data-key');
+      var uid = $this.attr('data-uid');
+
+      db.ref('users/' + uid + '/vault/' + key).remove();
+      
     });
   });
 
