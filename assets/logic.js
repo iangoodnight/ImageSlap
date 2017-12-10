@@ -227,7 +227,7 @@ $( document ).ready(function() {
             publish.addClass("card-action");
 
             var publishLink = $("<button>");
-            publishLink.addClass("clickable picture waves-effect waves-light btn modal-trigger");
+            publishLink.addClass("pubbtn picture waves-effect waves-light btn modal-trigger");
             publishLink.attr({
               'href': "#picmodal",
               'data-img': image,
@@ -265,8 +265,19 @@ $( document ).ready(function() {
     $('#inputlabel').text('Write some text to slap on an image.');
   });
 
+  // cloudinary functions
+  function doCloudinary(img,txt){
+    console.log('doCloudinary with img: ', img);
+    console.log('doCloudinary with txt: ', txt);
+
+    // saveURL contains the final cloudinary URL to the image with text on it
+    var saveURL = 'https://placehold.it/300x200'; 
+    // return the saveURL back to where it was called
+    return saveURL;
+  }
+
   $(document).click(function(event){
-    $(event.target).closest('.clickable').each(function(){
+    $(event.target).closest('.pubbtn').each(function(){
       var objid = '#' + this.id;
       var $this = $(this);
       console.log(objid + ' clicked!');
@@ -276,8 +287,28 @@ $( document ).ready(function() {
       // });
       var picimg = $('<img>').attr('src', $this.attr('data-img'));
       var pictxt = $('<p>').text($this.attr('data-txt'));
-      $picmodalContent.text('').append(picimg).append(pictxt);
+      var savebtn = $('<button>').attr({
+        'class': 'savebtn waves-effect waves-light btn',
+        'id': 'savethis',
+        'data-img': $this.attr('data-img'),
+        'data-txt': $this.attr('data-txt')
+      }).text('Save SlapIt Image');
+      $picmodalContent.text('').append(picimg).append(pictxt).append(savebtn);
+    }); // end .pubbtn click check
 
+
+    $(event.target).closest('.savebtn').each(function(){
+      // this button is to save the cloudinary URL to the firebase database for the user
+
+      var objid = '#' + this.id;
+      var $this = $(this);
+      console.log(objid + ' clicked!');
+
+      var picimg = $this.attr('data-img');
+      console.log('Image URL to send: ',picimg);
+      console.log('Text to send: ',pictxt);
+      var pictxt = $this.attr('data-txt');
+      console.log('Cloudinary URL: ', doCloudinary(picimg, pictxt));
 
     });
   });
