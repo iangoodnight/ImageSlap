@@ -48,6 +48,7 @@ $( document ).ready(function() {
         console.log('user email', user.email);
         clearInputs(['#register-displayname','#register-email','#register-password']);
         $('#emailmodal').modal('close');
+        $('#imgvault-show, #imgvault-grid').empty();
       }
     });
   });
@@ -63,6 +64,7 @@ $( document ).ready(function() {
     });
     clearInputs(['#login-email','#login-password']);
     $('#emailmodal').modal('close');
+    $('#imgvault-show, #imgvault-grid').empty();
   });
 
   // Handle authenticated users
@@ -114,7 +116,11 @@ $( document ).ready(function() {
   // Database Functions
   function updateVault(uid, key, data){
     var $div = $('<div>').attr('class','col s3');
-    var $img = $('<img>').attr({ 'src': data.url,'id': data.timestamp,'data-value': key, 'class': 'responsive-img' });
+    var $img = $('<a>').attr({
+      'class': 'imgdisplay',
+      'data-value': data.url
+    });
+    $img = $img.append($('<img>').attr({ 'src': data.url,'id': data.timestamp,'data-value': key, 'class': 'responsive-img' }));
     var $button = $('<button>').attr({
       'class': 'delbtn btn waves-effect waves-light red',
       'data-key': key,
@@ -148,10 +154,6 @@ $( document ).ready(function() {
       updates['users/' + uid + '/vault/' + newImgKey] = imgurl;
 
       return db.ref().update(updates);
-      // db.ref('users/' + uid +'/vault/').push({
-      //   timestamp: firebase.database.ServerValue.TIMESTAMP,
-      //   url: url
-      // });
     }
   }
 
@@ -205,66 +207,13 @@ $( document ).ready(function() {
 
   }
 
-  $('#kitten-button').on("click", function() {
-
-    $("#tweetgrid").empty();
-
-    // trim the input value
-    var tweet = $("#input").val().toLowerCase().trim().replace(/[^a-z0-9\s]/gi, '');
-    var tweetinput = $('#input').val().trim();
-    if (tweet.length > 0) {
-      console.log(tweet);
-      
-      var result = parseInput(tweet);
-      console.log(result);
-
-      // ------------------------------------------------
-
-      // Authenticated user - if not logged in, don't allow publish
-      var user = firebase.auth().currentUser;
-      var pubClass = false;
-      if (user != null) {
-        pubClass = true;
-      }
-
-      // Pixabay (limites to 100char search) key and URL
-      var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c";
-      var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + result;
-
-      $.ajax({
-            url: pixabayQueryURL,
-            method: "GET"
-      }).done(function(pixabayData) {
-
-        // Logging the URL so we have access to it for troubleshooting
-        console.log("------------------------------------");
-        console.log("URL: " + pixabayQueryURL);
-        console.log("------------------------------------");
-
-        // Log the pixabayData to console, where it will show up as an object     
-        console.log(pixabayData);
-        console.log("------------------------------------");
-
-        var resLength = pixabayData.hits.length;
-        console.log(resLength);
-
-        if (resLength <= 0) {
-          $('#input').addClass('invalid');
-          $('#inputlabel').text('Oh crap. This is.. super embarassing. We couldn\'t find an image for the amazing text that you wrote. Try some different text, and we\'ll try again.');
-        } else {
-          // do the thing
-          for (var i = 0; i < pixabayData.hits.length; i++) {
-
-            console.log("yes");
-
-            var image = pixabayData.hits[i].webformatURL;
-
-            // Building HTML elements for images
+  function updatePicGrid(image, i, tweetinput, pubClass){
+    // Building HTML elements for images
             var gridDiv = $("<div>");
             gridDiv.addClass("col m6");
 
             var imgOutsideDiv = $("<div>");
-            imgOutsideDiv.addClass("card");
+            imgOutsideDiv.addClass("card hoverable");
 
             var imgDiv = $("<div>");
             imgDiv.addClass("card-image");
@@ -318,14 +267,87 @@ $( document ).ready(function() {
             publish.append(publishLink);
 
             $("#tweetgrid").append(gridDiv);
-          } // end for
-        } // end error catching else
-      }); // end ajax done function
+
+  }
+
+  function callPixabay(result, tweetinput){
+    // Authenticated user - if not logged in, don't allow publish
+    var user = firebase.auth().currentUser;
+    var pubClass = false;
+    if (user != null) {
+      pubClass = true;
+    }
+
+    // Pixabay (limites to 100char search) key and URL
+    var pixaAPIKey = "7257370-30b7aa653946a15e7e86ea83c";
+    var pixabayQueryURL = "https://pixabay.com/api/?key=" + pixaAPIKey + "&q=" + result;
+
+    $.ajax({
+      url: pixabayQueryURL,
+      method: "GET"
+    }).done(function(pixabayData) {
+
+      // Logging the URL so we have access to it for troubleshooting
+      console.log("------------------------------------");
+      console.log("URL: " + pixabayQueryURL);
+      console.log("------------------------------------");
+
+      // Log the pixabayData to console, where it will show up as an object     
+      console.log(pixabayData);
+      console.log("------------------------------------");
+
+      var resLength = pixabayData.hits.length;
+      console.log(resLength);
+
+      if (resLength <= 0) {
+        $('#input').addClass('invalid');
+        $('#inputlabel').text('Oh crap. This is.. super embarassing. We couldn\'t find an image for the amazing text that you wrote. Try some different text, and we\'ll try again.');
+      } else {
+        // do the thing
+        for (var i = 0; i < pixabayData.hits.length; i++) {
+
+          console.log("yes");
+
+          var image = pixabayData.hits[i].webformatURL;
+          updatePicGrid(image, i, tweetinput, pubClass);
+          
+        } // end for
+      } // end error catching else
+    }); // end ajax done function
+  }
+
+
+  $('#slapit-button').on("click", function(e) {
+    e.preventDefault();
+    $("#tweetgrid").empty();
+
+    // trim the input value
+    var tweet = $("#input").val().toLowerCase().trim().replace(/[^a-z0-9\s]/gi, '');
+    var tweetinput = $('#input').val().trim();
+    
+    if (tweet.length > 0) {
+      $('#input').val('');
+      console.log(tweet);
+      
+      var result = parseInput(tweet);
+      console.log('Parsed result: ', result);
+
+      callPixabay(result, tweetinput);
+      // ------------------------------------------------
+
+     
+     
     } else {
       $('#input').addClass('invalid');
       $('#inputlabel').text('Sorry, there was no text to slap. Write some text first.');
     }
-  }); // end kitten button click
+  }); // end slapit-button click
+
+  $('#kitten-button').on('click', function(e){
+    e.preventDefault();
+    $("#tweetgrid").empty();
+     callPixabay('kitten', '#CATLIFE');
+  });
 
   $('#input').focusin(function() {
     $('#inputlabel').text('Write some text to slap on an image.');
@@ -380,6 +402,14 @@ $( document ).ready(function() {
       var url = doCloudinary(picimg, pictxt);
       // save link to db
       pushUserImage(url);
+      $('#picmodal').modal('close');
+      window.scrollTo(0, 0);
+      setTimeout(function(){
+        $('#usermsg').text('Your image has been saved to your vault.').addClass('light-green lighten-2').fadeIn();
+      }, 500);
+      setTimeout(function(){
+        $('#usermsg').fadeOut();
+      }, 5000);
 
     });
 
@@ -393,6 +423,21 @@ $( document ).ready(function() {
       db.ref('users/' + uid + '/vault/' + key).remove();
       
     });
+
+    // track clicks on image vault images
+    $(event.target).closest('.imgdisplay').each(function(){
+      console.log('Image preview clicked!');
+      var $this = $(this);
+      var $imgshow = $('#imgvault-show');
+      $imgshow.empty();
+      $imgshow.append(
+        $('<img>').attr({
+          'class': 'responsive-img',
+          'src': $(this).attr('data-value')
+        })
+      );
+    });
+
   });
 
 

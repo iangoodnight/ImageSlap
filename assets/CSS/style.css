@@ -87,11 +87,20 @@ html { box-sizing: border-box; }
 		background: #0e0e0e;
 		border: 0;
     height: 1px;
-	 }
+	}
 
-	 #authlogout {
-	 	display: none;
-	 }
+	#authlogout, #usermsg {
+		display: none;
+	}
+
+	#authlogout a {
+		margin-bottom: 5px;
+	}
+	.mainbtns button {
+		display: block;
+		width: 100%;
+		margin-bottom: 15px;
+	}
 }
 
 @media only screen and (min-width: 480px) {

@@ -28,14 +28,20 @@
     </div>
   </nav>
   <div class="section no-pad-bot blue-grey lighten-5 z-depth-1" id="authsection">
-    <div class="row valign-wrapper">
-      <div class="col s6">
+    <div class="row">
+
+      <div class="col s6 m4">
         <a id="email-login" href="#emailmodal" class="waves-effect waves-light btn modal-trigger">Login</a>
         <div class="authuser"></div>
       </div>
-      <div class="col s6 right-align">
+
+      <div class="col s6 m4">
+        <div id="usermsg" class="center light-green lighten-2">Testing testing 1 2 3</div>
+      </div>
+
+      <div class="col s12 m4 right-align">
         <div id="authlogout">
-          <a href="#imgvault" class="waves-effect waves-light btn modal-trigger">My Image Vault</a>
+          <a href="#imgvault" id="imgvault-btn" class="waves-effect waves-light btn modal-trigger">My Image Vault</a>
           <a id="authlogout-btn" class="waves-effect waves-light btn">Logout</a>
         </div>
       </div>
@@ -103,28 +109,36 @@
   </div>
   <div class="section no-pad-bot" id="index-banner">
     <div class="container">
-      <br><br>
       <h1 class="header center orange-text">ImageSlap</h1>
       <div class="row center">
         <h5 class="header col s12 light">You provide the text. We'll slap it on an image.</h5>
       </div>
-      <div class="row center">
+      <form class="row center">
         <div class="col s8 offset-s2">
+          
           <div class="row">
+            
             <div class="input-field col s12">
               <input type="text" id="input" data-length="144">
               <label id="inputlabel" for="input">Write some text to slap on an image.</label>
             </div>
-          </div>
-          <div class="row">
-            <div class="col s12">
-              <button id="kitten-button" class="btn-large waves-effect waves-light orange validate">Slap It</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <br><br>
 
+          </div>
+
+          <div class="row">
+          
+            <div class="section col s12 m6 mainbtns">
+              <button id="slapit-button" class="btn-large waves-effect waves-light orange validate">Slap It</button>
+            </div>
+          
+            <div class="section col s12 m6 mainbtns">
+              <button id="kitten-button" class="btn-large waves-effect waves-light orange validate">I Want Kittens</button>
+            </div>
+
+          </div>
+
+        </div>
+      </form>
     </div>
   </div>
   <div class="container">
@@ -158,6 +172,9 @@
       <div class="row">
         <div class="col s12">
           <h3><span class="authuser-name">My</span> Image Vault</h3>
+          <div class="row">
+            <div id="imgvault-show" class="center"></div>
+          </div>
           <div class="row">
             <div id="imgvault-grid"></div>
           </div>
