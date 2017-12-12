@@ -16,6 +16,7 @@
 <!-- JavaScript -->
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js" type="text/javascript"></script>
   <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
   <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
 <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
@@ -141,25 +142,18 @@
       </form>
     </div>
   </div>
+   <!-- Image Search Grid Result -->
   <div class="container">
     <div class="section">
-      <div class="row" id="tweetgrid">
-        <div id="picmodal" class="modal">
-          <div class="modal-content">
-            <h4>Modal Header</h4>
-            <p>A bunch of text</p>
-          </div>
-          <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-          </div>
-        </div>
-      </div>
+      <div class="row" id="tweetgrid"></div>
     </div>
-  </div>  
+  </div>
+
+  <!-- Display Selected Image to Slap -->
   <div class="container">
     <div class="section">
-      <div class="row" id="tweetgrid">
-        <div id="picmodal" class="modal">
+      <div class="row">
+        <div id="picmodal" class="modal findme2">
           <div id="picmodalContent" class="modal-content">
             <h1>HELLO</h1>
           </div>
@@ -167,6 +161,8 @@
       </div>
     </div>
   </div>
+
+  <!-- User Image Vault Modal -->
   <div id="imgvault" class="modal">
     <div class="section">
       <div class="row">
