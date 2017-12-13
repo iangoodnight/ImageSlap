@@ -2,8 +2,10 @@
 $( document ).ready(function() {
   console.log( "ready!" );
   // console.log(junk);
-
+ 
   // global variables
+  
+  // test('x','y');
   
   // Initialize Firebase
   var config = {
@@ -353,16 +355,55 @@ $( document ).ready(function() {
     $('#inputlabel').text('Write some text to slap on an image.');
   });
 
-  // // cloudinary functions
-  // function doCloudinary(img,txt){
-  //   console.log('doCloudinary with img: ', img);
-  //   console.log('doCloudinary with txt: ', txt);
 
-  //   // saveURL contains the final cloudinary URL to the image with text on it
-  //   var saveURL = 'https://placehold.it/300x200'; 
-  //   // return the saveURL back to where it was called
-  //   return saveURL;
-  // }
+  // cloudinary functions
+  $.cloudinary.config({ cloud_name: 'dtjnvv7ar', secure: true});
+  var cloudinaryAPIKey = "759711278335879";
+  var cloudinaryAPIsecret = "ja0tCMvwaspL6HCz12g2tFZZw3M";
+  var clounaryQueryURL = "CLOUDINARY_URL=cloudinary://759711278335879:ja0tCMvwaspL6HCz12g2tFZZw3M@dtjnvv7ar";
+  var cloudinaryImageuploadURL = "https://api.cloudinary.com/v1_1/dtjnvv7ar/image/upload";
+
+  function doCloudinary(img,txt){
+    console.log('doCloudinary with img: ', img);
+    console.log('doCloudinary with txt: ', txt);
+
+    // jQuery fetch URL
+
+    // saveURL contains the final cloudinary URL to the image with text on it
+    // var $cloudinaryImg = $.cloudinary.image(
+    //   img, 
+    //   {
+    //     width: 300, 
+    //     height: 300, 
+    //     gravity: "face", 
+    //     radius: "max", 
+    //     crop: "fill", 
+    //     fetch_format: 
+    //     "auto", 
+    //     type: "fetch"
+    //   }
+    // ); 
+    var cloudinaryTxt = 'text:Encode%20Sans%20Condensed_20_bold:' + encodeURIComponent(txt);
+    var $cloudinaryImg = $.cloudinary.image(
+      img, 
+      { 
+        transformation: 
+        [
+          {width: 400, crop: 'scale'},
+          {overlay: cloudinaryTxt, gravity: 'south_west', y: 3, x: 12, color: '#000', width: 390, crop: 'fit', opacity:50},
+          {overlay: cloudinaryTxt, gravity: 'south_west', y: 5, x: 10, color: '#fff', width: 390, crop: 'fit'}
+        ],
+        
+        fetch_format: 
+        "auto", 
+        type: "fetch"
+      }
+    ); 
+    // return the saveURL back to where it was called
+    console.log('ScarJo?: ',$cloudinaryImg[0].src);
+    saveURL = $cloudinaryImg[0].src;
+    return saveURL;
+  }
 
   $(document).click(function(event){
 

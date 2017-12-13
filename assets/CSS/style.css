@@ -96,7 +96,7 @@ html { box-sizing: border-box; }
 	#authlogout a {
 		margin-bottom: 5px;
 	}
-	.mainbtns button {
+	.mainbtns button, #imgvault-grid button {
 		display: block;
 		width: 100%;
 		margin-bottom: 15px;
