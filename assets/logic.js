@@ -117,7 +117,7 @@ $( document ).ready(function() {
 
   // Database Functions
   function updateVault(uid, key, data){
-    var $div = $('<div>').attr('class','col s12 m3');
+    var $div = $('<div>').attr('class','col s3');
     var $img = $('<a>').attr({
       'class': 'imgdisplay',
       'data-value': data.url
