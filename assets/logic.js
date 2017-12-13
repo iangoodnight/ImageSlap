@@ -114,7 +114,6 @@ $( document ).ready(function() {
     }
   });
 
-
   // Database Functions
   function updateVault(uid, key, data){
     var $div = $('<div>').attr('class','col s3');
