@@ -354,7 +354,6 @@ $( document ).ready(function() {
     $('#inputlabel').text('Write some text to slap on an image.');
   });
 
-
   // cloudinary functions
   $.cloudinary.config({ cloud_name: 'dtjnvv7ar', secure: true});
   var cloudinaryAPIKey = "759711278335879";
@@ -412,14 +411,17 @@ $( document ).ready(function() {
       var $this = $(this);
       console.log(objid + ' clicked!');
       var $picmodalContent = $('#picmodalContent');
-      $picmodalContent.attr({
-        'style': 'background: url(\'' + $this.attr('data-img') + '\') 50% 50% no-repeat; background-size: cover; min-height: 400px;'
-      });
-      // var picimg = $('<img>').attr({
-      //   'src': $this.attr('data-img'),
-      //   'id': 'kittens'
-      //   });
+      // $picmodalContent.attr({
+      //   'style': 'background: url(\'' + $this.attr('data-img') + '\') 50% 50% no-repeat; background-size: cover;'
+      // });
+      var picimg = $('<img>').attr('src', $this.attr('data-img'));
       var pictxt = $('<p>').text($this.attr('data-txt'));
+      var $piccard = $('<div>').attr('class','card');
+      var $piccardimg = $('<div>').attr('class','card-image');
+      $piccardimg.append(picimg);
+      $piccardimg.append($('<span>').attr({'class':'card-title','style': 'text-shadow: 1px 1px 2px black;'}).text($this.attr('data-txt')));
+      $piccard.append($piccardimg);
+
       var savebtn = $('<button>').attr({
         'class': 'savebtn waves-effect waves-light btn',
         'id': 'savethis',
@@ -427,7 +429,8 @@ $( document ).ready(function() {
         'data-txt': $this.attr('data-txt')
       }).text('Save SlapIt Image');
       // $picmodalContent.text('').append(picimg).append(pictxt).append(savebtn);
-      $picmodalContent.text('').append(pictxt).append(savebtn);
+      $picmodalContent.text('').append($piccard).append(savebtn);
+
     }); // end .pubbtn click check
 
     // track clicks for the generated Save button
@@ -441,15 +444,9 @@ $( document ).ready(function() {
       // Store img and txt and pass to Cloudinary function
       var picimg = $this.attr('data-img');
       var pictxt = $this.attr('data-txt');
-      // console.log('Cloudinary URL: ', doCloudinary(picimg, pictxt));
-      var myImage = null;
-      html2canvas($('#picmodalContent'), {
-      allowTaint: true,
-      onrendered: function(canvas) {
-        myImage = canvas.toDataURL('image/jpeg');
-        // $('.lightbox').fadeIn(200);
-      var url = myImage;
-      console.log(url);
+      console.log('Cloudinary URL: ', doCloudinary(picimg, pictxt));
+      // Store return from Cloudinary function
+      var url = doCloudinary(picimg, pictxt);
       // save link to db
       pushUserImage(url);
       $('#picmodal').modal('close');
@@ -460,8 +457,6 @@ $( document ).ready(function() {
       setTimeout(function(){
         $('#usermsg').fadeOut();
       }, 5000);
-      }
-      });
 
     });
 
